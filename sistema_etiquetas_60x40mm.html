@@ -1,0 +1,312 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Five Points | Etiquetas 60x40mm</title>
+    <style>
+        :root {
+            --primary: #2c3e50;
+            --accent: #e67e22;
+            --bg: #f4f7f6;
+            --card: #ffffff;
+            --success: #27ae60;
+            --danger: #e74c3c;
+        }
+
+        body { font-family: 'Segoe UI', Tahoma, sans-serif; background-color: var(--bg); margin: 0; padding: 0; display: flex; flex-direction: column; align-items: center; }
+        nav { width: 100%; background: var(--primary); display: flex; justify-content: center; padding: 0; position: sticky; top: 0; z-index: 100; }
+        .nav-item { padding: 15px 20px; color: #bdc3c7; cursor: pointer; font-weight: bold; font-size: 13px; text-transform: uppercase; transition: 0.3s; }
+        .nav-item.active { color: white; border-bottom: 4px solid var(--accent); }
+        .container { width: 100%; max-width: 500px; padding: 20px; box-sizing: border-box; }
+        .page { display: none; background: var(--card); padding: 25px; border-radius: 12px; box-shadow: 0 5px 15px rgba(0,0,0,0.05); min-height: 400px; }
+        .page.active { display: block; }
+        .header { text-align: center; margin-bottom: 20px; }
+        h2 { color: var(--primary); font-size: 18px; margin-bottom: 20px; text-align: center; border-bottom: 2px solid #eee; padding-bottom: 10px; }
+        .form-group { margin-bottom: 15px; }
+        label { display: block; font-size: 13px; font-weight: 600; margin-bottom: 5px; color: #666; }
+        select, input { width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 6px; font-size: 16px; box-sizing: border-box; background: #fff; }
+        button { width: 100%; padding: 15px; border: none; border-radius: 8px; font-size: 16px; font-weight: bold; cursor: pointer; transition: 0.2s; margin-top: 10px; }
+        .btn-main { background: var(--accent); color: white; }
+        .btn-save { background: var(--success); color: white; }
+        #pin-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.9); display: none; align-items: center; justify-content: center; z-index: 1000; }
+        .pin-box { background: white; padding: 30px; border-radius: 12px; text-align: center; width: 300px; }
+        .table-container { overflow-x: auto; margin-top: 15px; }
+        table { width: 100%; border-collapse: collapse; font-size: 12px; }
+        th, td { padding: 12px; border-bottom: 1px solid #eee; text-align: left; }
+        th { background: #f8f9fa; }
+        #print-area { display: none; }
+
+        /* --- CONFIGURAÇÃO ESPECÍFICA PARA ETIQUETA 60x40mm --- */
+        @media print {
+            @page {
+                size: 60mm 40mm;
+                margin: 0;
+            }
+            body * { visibility: hidden; }
+            #print-area, #print-area * { visibility: visible; }
+            #print-area { 
+                position: absolute; 
+                left: 0; 
+                top: 0; 
+                width: 60mm; 
+                height: 40mm;
+                display: block !important; 
+            }
+            .etiqueta { 
+                width: 60mm; 
+                height: 40mm;
+                padding: 2mm 3mm; 
+                box-sizing: border-box;
+                text-align: left; 
+                page-break-after: always; 
+                color: black;
+                font-family: Arial, sans-serif;
+                overflow: hidden;
+            }
+            .etiqueta h1 { 
+                font-size: 14pt; 
+                margin: 0 0 2mm 0; 
+                text-transform: uppercase; 
+                border-bottom: 1px solid black; 
+                text-align: center;
+                white-space: nowrap;
+                overflow: hidden;
+            }
+            .etiqueta p { 
+                font-size: 9pt; 
+                margin: 1mm 0; 
+                line-height: 1.2; 
+            }
+            .etiqueta .footer {
+                font-size: 7pt;
+                font-weight: bold;
+                text-align: center;
+                margin-top: 2mm;
+                border-top: 0.5px dashed black;
+                padding-top: 1mm;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <nav class="no-print">
+        <div class="nav-item active" onclick="showPage('print', false)">🖨️ Imprimir</div>
+        <div class="nav-item" onclick="showPage('products', true)">🍔 Produtos</div>
+        <div class="nav-item" onclick="showPage('reports', true)">📊 Relatórios</div>
+    </nav>
+
+    <div class="container no-print">
+        <div id="page-print" class="page active">
+            <div class="header">
+                <h1>Five Points</h1>
+                <p style="font-size:12px; color:#666;">Etiquetas 60x40mm</p>
+            </div>
+            
+            <div class="form-group">
+                <label>Responsável:</label>
+                <select id="sel-user">
+                    <option value="">Selecione...</option>
+                    <option value="Endrigo">Endrigo</option>
+                    <option value="Cozinha - T1">Cozinha - T1</option>
+                    <option value="Cozinha - T2">Cozinha - T2</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label>Produto:</label>
+                <select id="sel-prod">
+                    <option value="">Carregando...</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label>Quantidade:</label>
+                <input type="number" id="sel-qty" value="1" min="1">
+            </div>
+
+            <button class="btn-main" onclick="handlePrint()">IMPRIMIR AGORA</button>
+            <p id="cloud-status" style="font-size:10px; text-align:center; margin-top:20px; color:#999;">Sistema pronto</p>
+        </div>
+
+        <div id="page-products" class="page">
+            <h2>Gerenciar Produtos</h2>
+            <div class="form-group">
+                <label>Nome:</label>
+                <input type="text" id="new-prod-name">
+            </div>
+            <div class="form-group">
+                <label>Validade:</label>
+                <div style="display: flex; gap: 10px;">
+                    <input type="number" id="new-prod-val">
+                    <select id="new-prod-unit">
+                        <option value="days">Dias</option>
+                        <option value="hours">Horas</option>
+                    </select>
+                </div>
+            </div>
+            <button class="btn-save" onclick="saveNewProduct()">SALVAR PRODUTO</button>
+            <div id="product-list" style="margin-top:20px;"></div>
+        </div>
+
+        <div id="page-reports" class="page">
+            <h2>Relatório de Impressões</h2>
+            <div class="table-container">
+                <table id="report-table">
+                    <thead><tr><th>Hora</th><th>Resp.</th><th>Prod.</th><th>Qtd</th></tr></thead>
+                    <tbody></tbody>
+                </table>
+            </div>
+            <button onclick="downloadCSV()" style="margin-top:15px; background:#34495e; color:white;">BAIXAR CSV</button>
+        </div>
+    </div>
+
+    <div id="pin-overlay">
+        <div class="pin-box">
+            <h3>Acesso Restrito</h3>
+            <input type="password" id="pin-input" maxlength="4" style="text-align:center; font-size:24px; width:150px;">
+            <button class="btn-main" onclick="checkPin()">ENTRAR</button>
+            <button onclick="closePin()" style="background:none; color:#888;">Voltar</button>
+        </div>
+    </div>
+
+    <div id="print-area"></div>
+
+    <script>
+        // --- CONFIGURAÇÃO ---
+        const MASTER_PIN = "1234"; 
+        const GOOGLE_SCRIPT_URL = ""; 
+
+        let db = JSON.parse(localStorage.getItem('fp_db')) || { products: [], logs: [] };
+        let currentTargetPage = 'print';
+
+        function showPage(pageId, protected) {
+            if(protected) {
+                currentTargetPage = pageId;
+                document.getElementById('pin-overlay').style.display = 'flex';
+                document.getElementById('pin-input').focus();
+            } else { switchPage(pageId); }
+        }
+
+        function checkPin() {
+            if(document.getElementById('pin-input').value === MASTER_PIN) {
+                switchPage(currentTargetPage);
+                closePin();
+            } else { alert("PIN Incorreto!"); }
+            document.getElementById('pin-input').value = '';
+        }
+
+        function closePin() { document.getElementById('pin-overlay').style.display = 'none'; }
+
+        function switchPage(pageId) {
+            document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+            document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+            document.getElementById('page-' + pageId).classList.add('active');
+            const items = document.querySelectorAll('.nav-item');
+            if(pageId === 'print') items[0].classList.add('active');
+            if(pageId === 'products') items[1].classList.add('active');
+            if(pageId === 'reports') items[2].classList.add('active');
+        }
+
+        function updateUI() {
+            localStorage.setItem('fp_db', JSON.stringify(db));
+            const sel = document.getElementById('sel-prod');
+            sel.innerHTML = '<option value="">Selecione...</option>';
+            db.products.forEach(p => {
+                sel.innerHTML += `<option value="${p.name}" data-val="${p.val}" data-unit="${p.unit}">${p.name}</option>`;
+            });
+
+            const list = document.getElementById('product-list');
+            list.innerHTML = '';
+            db.products.forEach((p, i) => {
+                list.innerHTML += `<div style="display:flex; justify-content:space-between; padding:8px; border-bottom:1px solid #eee;">
+                    <span>${p.name} (${p.val}${p.unit[0]})</span>
+                    <button onclick="deleteProduct(${i})" style="width:auto; padding:2px 8px; background:var(--danger); color:white; font-size:10px;">X</button>
+                </div>`;
+            });
+
+            const tbody = document.querySelector('#report-table tbody');
+            tbody.innerHTML = '';
+            db.logs.slice().reverse().forEach(l => {
+                tbody.innerHTML += `<tr><td>${l.time}</td><td>${l.user}</td><td>${l.prod}</td><td>${l.qty}</td></tr>`;
+            });
+        }
+
+        function saveNewProduct() {
+            const name = document.getElementById('new-prod-name').value;
+            const val = document.getElementById('new-prod-val').value;
+            const unit = document.getElementById('new-prod-unit').value;
+            if(!name || !val) return;
+            db.products.push({ name, val, unit });
+            updateUI();
+            syncToCloud();
+        }
+
+        function deleteProduct(i) { db.products.splice(i, 1); updateUI(); syncToCloud(); }
+
+        function handlePrint() {
+            const user = document.getElementById('sel-user').value;
+            const prodEl = document.getElementById('sel-prod');
+            const qty = parseInt(document.getElementById('sel-qty').value);
+            if(!user || !prodEl.value) return;
+
+            const now = new Date();
+            const timeStr = now.toLocaleDateString('pt-BR') + ' ' + now.getHours().toString().padStart(2,'0') + ':' + now.getMinutes().toString().padStart(2,'0');
+            db.logs.push({ time: timeStr, user, prod: prodEl.value, qty });
+            updateUI();
+            syncToCloud();
+
+            const selected = prodEl.options[prodEl.selectedIndex];
+            const valVal = parseInt(selected.getAttribute('data-val'));
+            const valUnit = selected.getAttribute('data-unit');
+            let valDate = new Date(now);
+            if(valUnit === 'days') valDate.setDate(valDate.getDate() + valVal);
+            else valDate.setHours(valDate.getHours() + valVal);
+            const valStr = valDate.toLocaleDateString('pt-BR') + ' ' + valDate.getHours().toString().padStart(2,'0') + ':' + valDate.getMinutes().toString().padStart(2,'0');
+
+            const printArea = document.getElementById('print-area');
+            printArea.innerHTML = '';
+            
+            for(let i=0; i<qty; i++) {
+                printArea.innerHTML += `
+                    <div class="etiqueta">
+                        <h1>${selected.value}</h1>
+                        <p><b>FAB:</b> ${timeStr}</p>
+                        <p><b>VAL:</b> ${valStr}</p>
+                        <p><b>RESP:</b> ${user}</p>
+                        <div class="footer">FIVE POINTS BURGUER</div>
+                    </div>
+                `;
+            }
+            window.print();
+        }
+
+        async function syncToCloud() {
+            if(!GOOGLE_SCRIPT_URL) return;
+            try { await fetch(GOOGLE_SCRIPT_URL, { method: 'POST', mode: 'no-cors', body: JSON.stringify(db) }); } catch(e) {}
+        }
+
+        async function pullFromCloud() {
+            if(!GOOGLE_SCRIPT_URL) return;
+            try {
+                const r = await fetch(GOOGLE_SCRIPT_URL);
+                const data = await r.json();
+                if(data) { db = data; updateUI(); }
+            } catch(e) {}
+        }
+
+        function downloadCSV() {
+            let csv = "Data;Resp;Prod;Qtd\n";
+            db.logs.forEach(l => csv += `${l.time};${l.user};${l.prod};${l.qty}\n`);
+            const blob = new Blob([csv], { type: 'text/csv' });
+            const link = document.createElement("a");
+            link.href = URL.createObjectURL(blob);
+            link.download = "relatorio.csv";
+            link.click();
+        }
+
+        window.onload = () => { updateUI(); pullFromCloud(); };
+    </script>
+</body>
+</html>
