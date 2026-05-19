@@ -82,8 +82,8 @@
             
             .etiqueta { 
                 width: 60mm; 
-                height: 59mm; /* 1mm menor para evitar gerar uma página em branco extra */
-                padding: 4mm 3mm; 
+                height: 59mm; 
+                padding: 5mm 3mm 2mm 8mm; /* Ajustado recuo esquerdo para 8mm e topo para 5mm (Tomate MDK-006) */
                 box-sizing: border-box; 
                 text-align: left; 
                 page-break-after: always; 
@@ -91,13 +91,12 @@
                 background: white;
                 font-family: Arial, sans-serif; 
                 overflow: hidden; 
-                border-bottom: 1px dashed #ccc;
             }
             
             .etiqueta h1 { 
-                font-size: 13pt; /* Fonte aumentada */
+                font-size: 13pt; 
                 font-weight: bold;
-                margin: 0 0 4mm 0; /* Mais respiro abaixo do título */
+                margin: 0 0 4mm 0; 
                 padding-bottom: 2mm;
                 text-transform: uppercase; 
                 border-bottom: 1.5px solid black; 
@@ -110,7 +109,7 @@
             }
             
             .etiqueta p { 
-                font-size: 11pt; /* Fonte dos dados aumentada */
+                font-size: 11pt; 
                 margin: 2mm 0; 
                 line-height: 1.5; 
                 font-weight: normal; 
