@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Five Points | Gestão de Etiquetas v7.7</title>
+    <title>Five Points | Gestão de Etiquetas v7.8</title>
     <style>
         :root {
             --primary: #800000;
@@ -128,7 +128,7 @@
                 <div class="header">
                     <div class="logo-box"><span>Five Points</span></div>
                     <h1>Validades</h1>
-                    <p>Etiquetas 60x40mm v7.7</p>
+                    <p>Etiquetas 60x40mm v7.8</p>
                 </div>
                 
                 <div class="form-group">
@@ -271,6 +271,22 @@
             if(pageId === 'products') items[1].classList.add('active');
             if(pageId === 'employees') items[2].classList.add('active');
             if(pageId === 'reports') items[3].classList.add('active');
+            
+            if (pageId === 'products') {
+                updateNextCode();
+            }
+        }
+        
+        function updateNextCode() {
+            const codeInput = document.getElementById('new-prod-code');
+            if (db.products.length > 0) {
+                const maxCode = db.products.reduce((max, p) => p.code > max ? p.code : max, 0);
+                codeInput.value = maxCode + 1;
+            } else {
+                codeInput.value = 1;
+            }
+            codeInput.removeAttribute('readonly');
+            codeInput.style.backgroundColor = '#fff';
         }
 
         function updateUI() {
@@ -324,10 +340,16 @@
             const name = document.getElementById('new-prod-name').value.toUpperCase();
             const val = document.getElementById('new-prod-val').value;
             const unit = document.getElementById('new-prod-unit').value;
-            if(!name || !val) return alert("Preencha o nome e a validade.");
+            const codeInput = document.getElementById('new-prod-code').value;
             
-            const maxCode = db.products.reduce((max, p) => p.code > max ? p.code : max, 0);
-            const code = maxCode + 1;
+            if(!name || !val || !codeInput) return alert("Preencha o código, nome e validade.");
+            
+            const code = parseInt(codeInput);
+            
+            const codeExists = db.products.some(p => p.code === code);
+            if (codeExists) {
+                return alert("Já existe um produto cadastrado com este CÓDIGO. Escolha outro número.");
+            }
 
             db.products.push({ name, val, unit, code });
             document.getElementById('new-prod-name').value = '';
@@ -339,7 +361,7 @@
         function deleteProduct(i) { db.products.splice(i, 1); updateUI(); syncToCloud(); }
 
         function restoreDefault() {
-            if(confirm("Restaurar lista original da Five Points? Suas alterações serão perdidas.")) {
+            if(confirm("ATENÇÃO: Restaurar a lista apagará o histórico local e recarregará todos os produtos e códigos padrão da Five Points. Deseja continuar?")) {
                 db.products = defaultProducts;
                 updateUI();
                 syncToCloud();
@@ -424,7 +446,7 @@
             const blob = new Blob([csv], { type: 'text/csv' });
             const link = document.createElement("a");
             link.href = URL.createObjectURL(blob);
-            link.download = "relatorio_fivepoints.csv";
+            link.download = "relatorio_tivepoints.csv";
             link.click();
         }
 
