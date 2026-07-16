@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Five Points | Gestão de Etiquetas v7.6</title>
+    <title>Five Points | Gestão de Etiquetas v7.7</title>
     <style>
         :root {
             --primary: #800000;
@@ -73,17 +73,16 @@
         
         #print-area { display: none; }
 
-        /* ======== ALTERAÇÕES DE IMPRESSÃO 40x40 ======== */
         @media print {
-            @page { size: 40mm 40mm; margin: 0; }
+            @page { size: 60mm 40mm; margin: 0; }
             body { background: white; margin: 0; padding: 0; }
             .no-print, nav, .container, #pin-overlay { display: none !important; }
-            #print-area { display: block !important; width: 40mm; height: 40mm; position: absolute; left: 0; top: 0; margin: 0; padding: 0; }
+            #print-area { display: block !important; width: 60mm; height: 40mm; position: absolute; left: 0; top: 0; margin: 0; padding: 0; }
             
             .etiqueta { 
-                width: 40mm; 
-                height: 38mm; /* 2mm a menos que 40mm para barrar totalmente a página extra em branco */
-                padding: 2mm 1mm 1mm 4mm; /* Espaçamento ajustado para não cortar na lateral esquerda da MDK-006 */
+                width: 60mm; 
+                height: 39mm; 
+                padding: 2mm 3mm; 
                 box-sizing: border-box; 
                 text-align: left; 
                 page-break-after: always; 
@@ -91,38 +90,25 @@
                 background: white;
                 font-family: Arial, sans-serif; 
                 overflow: hidden; 
+                border-bottom: 1px solid #ccc;
             }
             
             .etiqueta h1 { 
-                font-size: 9pt; /* Letra menor para caber */
+                font-size: 11pt; 
                 font-weight: bold;
-                margin: 0 0 1.5mm 0; 
-                padding-bottom: 1mm;
+                margin: 0 0 2mm 0; 
                 text-transform: uppercase; 
-                border-bottom: 1px solid black; 
+                border-bottom: 1.5px solid black; 
                 text-align: center; 
                 white-space: normal;
-                line-height: 1; 
-                max-height: 10mm;
+                line-height: 1.1; 
+                max-height: 12mm;
                 display: block;
                 overflow: hidden;
             }
             
-            .etiqueta p { 
-                font-size: 7.5pt; 
-                margin: 1mm 0; 
-                line-height: 1.2; 
-                font-weight: normal; 
-            }
-            
-            .etiqueta .footer { 
-                font-size: 6pt; 
-                font-weight: bold; 
-                text-align: center; 
-                margin-top: 2mm; 
-                border-top: 0.5px dashed black; 
-                padding-top: 1mm; 
-            }
+            .etiqueta p { font-size: 9.5pt; margin: 1mm 0; line-height: 1.3; font-weight: normal; }
+            .etiqueta .footer { font-size: 7.5pt; font-weight: bold; text-align: center; margin-top: 3mm; border-top: 0.5px dashed black; padding-top: 1.5mm; }
         }
     </style>
 </head>
@@ -142,7 +128,7 @@
                 <div class="header">
                     <div class="logo-box"><span>Five Points</span></div>
                     <h1>Validades</h1>
-                    <p>Etiquetas 40x40mm v7.6</p>
+                    <p>Etiquetas 60x40mm v7.7</p>
                 </div>
                 
                 <div class="form-group">
@@ -220,7 +206,8 @@
                         <tbody></tbody>
                     </table>
                 </div>
-                <button onclick="downloadCSV()" style="margin-top:20px; background:#34495e; color:white;">BAIXAR EXCEL (CSV)</button>
+                <p style="font-size: 11px; text-align: center; color: #999; margin-top: 10px;">Exibindo os 100 registros mais recentes para otimização.</p>
+                <button onclick="downloadCSV()" style="margin-top:15px; background:#34495e; color:white;">BAIXAR EXCEL (CSV COMPLETO)</button>
             </div>
         </div>
 
@@ -240,20 +227,19 @@
 
     <script>
         const MASTER_PIN = "1234";
-        const GOOGLE_SCRIPT_URL = ""; 
+        const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbx8Ppo80LBtmovJfk_Q-ncqPyeg7Ns7jiXauNw235qLhBwK7ttI2I8ckDTgpiz0Ti0/exec"; 
 
         const defaultProducts = [{"name": "ALFACE", "code": 22, "val": 2, "unit": "days"}, {"name": "TOMATE", "code": 19, "val": 2, "unit": "days"}, {"name": "RÚCULA", "code": 23, "val": 2, "unit": "days"}, {"name": "MAIONESE POTE", "code": 9, "val": 2, "unit": "days"}, {"name": "MAIONESE BISNAGA", "code": 40, "val": 2, "unit": "days"}, {"name": "MISTURA MAIONESE", "code": 3, "val": 2, "unit": "days"}, {"name": "MOLHO FIVE POTE", "code": 8, "val": 3, "unit": "days"}, {"name": "MOLHO FIVE BISNAGA", "code": 39, "val": 3, "unit": "days"}, {"name": "MISTURA MOLHO FIVE", "code": 37, "val": 3, "unit": "days"}, {"name": "CEBOLA BRANCA", "code": 20, "val": 3, "unit": "days"}, {"name": "CEBOLA ROXA", "code": 21, "val": 3, "unit": "days"}, {"name": "CEBOLA BLACK ABERTA (POTE USO)", "code": 35, "val": 3, "unit": "days"}, {"name": "HAMBÚRGUER BOVINO", "code": 1, "val": 3, "unit": "days"}, {"name": "SMASH DE CARNE", "code": 4, "val": 3, "unit": "days"}, {"name": "SMASH LINGUICA", "code": 5, "val": 3, "unit": "days"}, {"name": "BACON EMPANADO", "code": 13, "val": 3, "unit": "days"}, {"name": "BACON FATIADO", "code": 2, "val": 3, "unit": "days"}, {"name": "BACON IN NATURA", "code": 12, "val": 3, "unit": "days"}, {"name": "BIG FIVE", "code": 300, "val": 3, "unit": "days"}, {"name": "CREME DE CHEDDAR", "code": 29, "val": 3, "unit": "days"}, {"name": "CEBOLA BLACK BEER", "code": 18, "val": 5, "unit": "days"}, {"name": "PÃO BRIOCHE", "code": 77, "val": 5, "unit": "days"}, {"name": "PÃO DE FORMA", "code": 76, "val": 5, "unit": "days"}, {"name": "PÃO KIDS", "code": 74, "val": 5, "unit": "days"}, {"name": "QUEIJO CHEDDAR FATIADO", "code": 24, "val": 5, "unit": "days"}, {"name": "QUEIJO MUSSARELA", "code": 30, "val": 5, "unit": "days"}, {"name": "QUEIJO PRATO FATIADO", "code": 25, "val": 5, "unit": "days"}, {"name": "QUEIJO PROVOLONE FATIADO", "code": 26, "val": 5, "unit": "days"}, {"name": "QUEIJO GORGONZOLA", "code": 27, "val": 5, "unit": "days"}, {"name": "QUEIJO PROVOLONE+GORGONZOLA", "code": 500, "val": 5, "unit": "days"}, {"name": "QUEIJO COALHO INTEIRO", "code": 28, "val": 5, "unit": "days"}, {"name": "QUEIJO COALHO FATIADO", "code": 31, "val": 5, "unit": "days"}, {"name": "PRESUNTO", "code": 78, "val": 5, "unit": "days"}, {"name": "PICLES ABERTO (POTE USO)", "code": 36, "val": 15, "unit": "days"}, {"name": "GELEIA BACON ABERTA (POTE USO)", "code": 34, "val": 15, "unit": "days"}, {"name": "PICLES", "code": 10, "val": 30, "unit": "days"}, {"name": "GELEIA BACON", "code": 17, "val": 30, "unit": "days"}, {"name": "GELEIA PIMENTA", "code": 33, "val": 30, "unit": "days"}, {"name": "CATCHUP", "code": 7, "val": 30, "unit": "days"}, {"name": "CATCHUP BISNAGA", "code": 38, "val": 30, "unit": "days"}, {"name": "MOSTARDA ABERTA", "code": 6, "val": 30, "unit": "days"}, {"name": "BARBECUE SPICY (CHINATOWN)", "code": 70, "val": 30, "unit": "days"}, {"name": "DOCE DE LEITE", "code": 67, "val": 30, "unit": "days"}, {"name": "XAROPE ABACAXI", "code": 65, "val": 30, "unit": "days"}, {"name": "XAROPE CRAMBERRY", "code": 64, "val": 30, "unit": "days"}, {"name": "XAROPE MAÇÃ VERDE", "code": 62, "val": 30, "unit": "days"}, {"name": "XAROPE PÊSSEGO", "code": 63, "val": 30, "unit": "days"}, {"name": "CEBOLA CRISPY", "code": 16, "val": 30, "unit": "days"}, {"name": "BACON FAROFA", "code": 14, "val": 30, "unit": "days"}, {"name": "NUGGETS PACOTE ABERTO", "code": 75, "val": 30, "unit": "days"}, {"name": "NUGGETS PORCIONADO", "code": 100, "val": 3, "unit": "days"}, {"name": "BACON CONGELADO", "code": 15, "val": 90, "unit": "days"}, {"name": "PRESUNTO CONGELADO", "code": 78, "val": 90, "unit": "days"}, {"name": "SMASH LINGUICA CONGELADA", "code": 72, "val": 90, "unit": "days"}, {"name": "BURGER FRANGO EMPANADO", "code": 73, "val": 90, "unit": "days"}, {"name": "QUEIJO EMPANADO", "code": 32, "val": 90, "unit": "days"}, {"name": "DADINHOS DE TAPIOCA", "code": 99, "val": 90, "unit": "days"}, {"name": "CHEESE PILLOWS", "code": 101, "val": 90, "unit": "days"}, {"name": "AMIDO DE MILHO", "code": 52, "val": 60, "unit": "days"}, {"name": "FARINHA DE TRIGO", "code": 51, "val": 60, "unit": "days"}, {"name": "FARINHA DE ROSCA", "code": 103, "val": 60, "unit": "days"}, {"name": "FARINHA PANKO", "code": 102, "val": 60, "unit": "days"}, {"name": "AÇÚCAR BRANCO", "code": 49, "val": 90, "unit": "days"}, {"name": "AÇÚCAR MASCAVO", "code": 50, "val": 90, "unit": "days"}, {"name": "ALHO EM PÓ", "code": 41, "val": 90, "unit": "days"}, {"name": "CANELA EM PÓ", "code": 60, "val": 90, "unit": "days"}, {"name": "CRAVO", "code": 59, "val": 90, "unit": "days"}, {"name": "CEBOLA EM PÓ", "code": 42, "val": 90, "unit": "days"}, {"name": "CHÁ EM PÓ", "code": 55, "val": 90, "unit": "days"}, {"name": "CHÁ PRONTO", "code": 56, "val": 3, "unit": "days"}, {"name": "MOSTARDA EM GRÃOS", "code": 53, "val": 90, "unit": "days"}, {"name": "MOSTARDA EM PÓ", "code": 43, "val": 90, "unit": "days"}, {"name": "ORÉGANO", "code": 46, "val": 90, "unit": "days"}, {"name": "PÁPRICA DEFUMADA", "code": 44, "val": 90, "unit": "days"}, {"name": "PÁPRICA DOCE", "code": 45, "val": 90, "unit": "days"}, {"name": "PIMENTA CALABRESA", "code": 57, "val": 90, "unit": "days"}, {"name": "PIMENTA DO REINO", "code": 54, "val": 90, "unit": "days"}, {"name": "RUB", "code": 11, "val": 90, "unit": "days"}, {"name": "SAL FINO", "code": 47, "val": 90, "unit": "days"}, {"name": "SAL GROSSO", "code": 48, "val": 90, "unit": "days"}, {"name": "SAL TEMPERADO", "code": 58, "val": 90, "unit": "days"}, {"name": "SAZON", "code": 61, "val": 90, "unit": "days"}, {"name": "GERGELIM", "code": 71, "val": 90, "unit": "days"}];
         const defaultEmployees = ["ENDRIGO", "RENATA", "ELIANE", "JOÃO MATEUS", "MARCELO", "FERNANDO", "EDUARDO", "BRUNO"];
 
-        let db = JSON.parse(localStorage.getItem('fp_db'));
+        let db = JSON.parse(localStorage.getItem('fp_db')) || { products: defaultProducts, logs: [], employees: defaultEmployees };
         
-        function initializeDB() {
-            if (!db || !db.products || !db.employees || db.products.some(p => p.code === undefined)) {
-                db = { products: defaultProducts, logs: [], employees: defaultEmployees };
-                localStorage.setItem('fp_db', JSON.stringify(db));
-            }
+        if(!db.employees || db.employees.length === 0) {
+            db.employees = defaultEmployees;
         }
-        initializeDB();
+        if(!db.products || db.products.length === 0) {
+            db.products = defaultProducts;
+        }
 
         let currentTargetPage = 'print';
 
@@ -285,22 +271,6 @@
             if(pageId === 'products') items[1].classList.add('active');
             if(pageId === 'employees') items[2].classList.add('active');
             if(pageId === 'reports') items[3].classList.add('active');
-            
-            if (pageId === 'products') {
-                updateNextCode();
-            }
-        }
-        
-        function updateNextCode() {
-            const codeInput = document.getElementById('new-prod-code');
-            if (db.products.length > 0) {
-                const maxCode = db.products.reduce((max, p) => p.code > max ? p.code : max, 0);
-                codeInput.value = maxCode + 1;
-            } else {
-                codeInput.value = 1;
-            }
-            codeInput.removeAttribute('readonly');
-            codeInput.style.backgroundColor = '#fff';
         }
 
         function updateUI() {
@@ -348,26 +318,16 @@
             db.logs.slice().reverse().forEach(l => {
                 tbody.innerHTML += `<tr><td>${l.time}</td><td>${l.user}</td><td>${l.prod}</td><td>${l.qty}</td></tr>`;
             });
-            
-            if (document.getElementById('page-products').classList.contains('active')) {
-                updateNextCode();
-            }
         }
 
         function saveNewProduct() {
             const name = document.getElementById('new-prod-name').value.toUpperCase();
             const val = document.getElementById('new-prod-val').value;
             const unit = document.getElementById('new-prod-unit').value;
-            const codeInput = document.getElementById('new-prod-code').value;
+            if(!name || !val) return alert("Preencha o nome e a validade.");
             
-            if(!name || !val || !codeInput) return alert("Preencha o código, nome e validade.");
-            
-            const code = parseInt(codeInput);
-            
-            const codeExists = db.products.some(p => p.code === code);
-            if (codeExists) {
-                return alert("Já existe um produto cadastrado com este CÓDIGO. Escolha outro número.");
-            }
+            const maxCode = db.products.reduce((max, p) => p.code > max ? p.code : max, 0);
+            const code = maxCode + 1;
 
             db.products.push({ name, val, unit, code });
             document.getElementById('new-prod-name').value = '';
@@ -379,8 +339,8 @@
         function deleteProduct(i) { db.products.splice(i, 1); updateUI(); syncToCloud(); }
 
         function restoreDefault() {
-            if(confirm("ATENÇÃO: Restaurar a lista apagará o histórico local e recarregará todos os produtos e códigos padrão da Five Points. Deseja continuar?")) {
-                db = { products: defaultProducts, logs: [], employees: defaultEmployees };
+            if(confirm("Restaurar lista original da Five Points? Suas alterações serão perdidas.")) {
+                db.products = defaultProducts;
                 updateUI();
                 syncToCloud();
             }
@@ -408,10 +368,10 @@
             if(!user || !prodEl.value) return alert("Selecione Responsável e Produto!");
 
             const selected = prodEl.options[prodEl.selectedIndex];
-            const productName = selected.text.split('] ')[1] || selected.value; 
+            const productName = selected.text.split('] ')[1]; 
             const valVal = parseInt(selected.getAttribute('data-val'));
             const valUnit = selected.getAttribute('data-unit');
-            const productCode = selected.getAttribute('data-code') || "N/A";
+            const productCode = selected.getAttribute('data-code');
             
             const now = new Date();
             const timeStr = now.toLocaleDateString('pt-BR') + ' ' + now.getHours().toString().padStart(2,'0') + ':' + now.getMinutes().toString().padStart(2,'0');
@@ -421,7 +381,7 @@
             else valDate.setHours(valDate.getHours() + valVal);
             const valStr = valDate.toLocaleDateString('pt-BR') + ' ' + valDate.getHours().toString().padStart(2,'0') + ':' + valDate.getMinutes().toString().padStart(2,'0');
 
-            db.logs.push({ time: timeStr, user, prod: `[${productCode}] ${productName}`, qty });
+            db.logs.push({ time: timeStr, user, prod: `${productName} [${productCode}]`, qty });
             updateUI();
             syncToCloud();
 
@@ -454,10 +414,7 @@
             try {
                 const r = await fetch(GOOGLE_SCRIPT_URL);
                 const data = await r.json();
-                if(data && data.products && data.products.length > 0 && !data.products.some(p => p.code === undefined)) { 
-                    db = data; 
-                    updateUI(); 
-                }
+                if(data && data.products && data.products.length > 0) { db = data; updateUI(); }
             } catch(e) {}
         }
 
